@@ -1,0 +1,12 @@
+{
+  "name": "plainnotes",
+  "version": "0.1.0",
+  "description": "Tiny notes API that keeps every entry as a plain markdown file",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.19.0"
+  }
+}
