@@ -27,7 +27,14 @@ app.post("/entries", async (req, res) => {
 
 app.get("/entries", async (req, res) => {
   const files = await fs.readdir(VAULT_DIR);
-  res.json(files.map((f) => f.replace(/\.md$/, "")));
+  const entries = await Promise.all(
+    files.map(async (f) => {
+      const st = await fs.stat(path.join(VAULT_DIR, f));
+      return { slug: f.replace(/\.md$/, ""), modified: st.mtime.toISOString() };
+    })
+  );
+  entries.sort((a, b) => b.modified.localeCompare(a.modified));
+  res.json(entries);
 });
 
 app.get("/entries/:slug", async (req, res) => {
