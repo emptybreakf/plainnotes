@@ -6,8 +6,15 @@ const VAULT_DIR = path.join(__dirname, "vault");
 const app = express();
 app.use(express.json());
 
-const slugify = (title) =>
-  title.replace(/[^a-z0-9-_]/gi, "-").toLowerCase() + ".md";
+const slugify = (title) => {
+  const slug = title
+    .trim()
+    .replace(/[^a-z0-9]+/gi, "-")
+    .replace(/^-+|-+$/g, "")
+    .toLowerCase();
+  const base = slug || "entry-" + Date.now().toString(36);
+  return base + ".md";
+};
 
 async function ensureVault() {
   await fs.mkdir(VAULT_DIR, { recursive: true });
