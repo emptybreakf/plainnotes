@@ -44,6 +44,20 @@ app.get("/entries", async (req, res) => {
   res.json(entries);
 });
 
+app.put("/entries/:slug", async (req, res) => {
+  const { title, body } = req.body || {};
+  if (!body) return res.status(400).json({ error: "body required" });
+  const file = path.join(VAULT_DIR, slugify(req.params.slug));
+  try {
+    await fs.access(file);
+  } catch {
+    return res.status(404).json({ error: "not found" });
+  }
+  const heading = title || req.params.slug;
+  await fs.writeFile(file, `# ${heading}\n\n${body}\n`);
+  res.json({ ok: true });
+});
+
 app.get("/entries/:slug", async (req, res) => {
   try {
     const content = await fs.readFile(
